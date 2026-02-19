@@ -9,9 +9,22 @@
 <link rel="stylesheet" href="style.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"></noscript>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+window.onerror=function(msg,src,line){
+  var d=document.createElement('div');
+  d.style.cssText='position:fixed;top:0;left:0;right:0;background:red;color:white;padding:12px;z-index:99999;font-size:14px;font-family:monospace';
+  d.textContent='JS ERROR: '+msg+' (line '+line+')';
+  document.body.appendChild(d);
+};
+window.addEventListener('unhandledrejection',function(e){
+  var d=document.createElement('div');
+  d.style.cssText='position:fixed;top:40px;left:0;right:0;background:orange;color:white;padding:12px;z-index:99999;font-size:14px;font-family:monospace';
+  d.textContent='ASYNC ERROR: '+e.reason;
+  document.body.appendChild(d);
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
-/* ===== CONTACTS PAGE STYLES ===== */
 .auth-section{max-width:420px;margin:0 auto;padding:2rem}
 .auth-card-inner{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:2rem;transition:all var(--sp)}
 .auth-card-inner h2{font-size:1.3rem;font-weight:800;margin-bottom:.2rem}
@@ -23,7 +36,6 @@
 .auth-tab:hover{border-color:var(--accent);color:var(--accent)}
 .auth-error{background:rgba(255,70,70,.1);border:1px solid rgba(255,70,70,.3);color:#ff4646;padding:.6rem .8rem;border-radius:9px;font-size:.8rem;font-weight:600;margin-bottom:.8rem}
 .auth-success{background:rgba(0,229,184,.1);border:1px solid rgba(0,229,184,.3);color:var(--accent2);padding:.6rem .8rem;border-radius:9px;font-size:.8rem;font-weight:600;margin-bottom:.8rem}
-/* CONTACTS APP */
 .contacts-app{max-width:var(--max-w);margin:0 auto;padding:1rem 2rem 3rem}
 .contacts-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;flex-wrap:wrap;gap:.8rem}
 .contacts-header h2{font-size:1.2rem;font-weight:800}
@@ -35,19 +47,16 @@
 .btn-add:hover{transform:translateY(-2px);box-shadow:0 6px 25px rgba(124,106,255,.35)}
 .btn-logout{border:1.5px solid var(--border);color:var(--muted);background:transparent}
 .btn-logout:hover{border-color:var(--accent);color:var(--accent)}
-/* Stats */
 .contacts-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;margin-bottom:1.2rem}
 .cs{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:.8rem;text-align:center;transition:all .3s}
 .cs:hover{border-color:var(--accent)}
 .cs-num{font-size:1.4rem;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;color:transparent}
 .cs-label{font-size:.62rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
-/* Search */
 .contacts-search{position:relative;margin-bottom:1.2rem}
 .contacts-search svg{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .contacts-search input{width:100%;padding:.7rem .9rem .7rem 2.6rem;background:var(--card);border:1.5px solid var(--border);border-radius:9px;color:var(--text);font-size:.85rem;font-family:var(--font);outline:none;transition:all .2s}
 .contacts-search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}
 .contacts-search .search-count{position:absolute;right:.9rem;top:50%;transform:translateY(-50%);font-size:.68rem;color:var(--muted);font-weight:600}
-/* Table */
 .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;background:var(--card);border:1px solid var(--border);border-radius:var(--r);transition:all var(--sp)}
 .contacts-table{width:100%;border-collapse:collapse;min-width:500px}
 .contacts-table th{text-align:left;padding:.7rem 1rem;font-size:.65rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border)}
@@ -65,12 +74,10 @@
 .btn-del{border:1.5px solid rgba(255,70,70,.3);color:#ff4646;background:transparent}
 .btn-del:hover{background:rgba(255,70,70,.1);border-color:#ff4646}
 .btn-edit:disabled,.btn-del:disabled{opacity:.5;cursor:not-allowed}
-/* Empty state */
 .empty-state{text-align:center;padding:3rem 1rem}
 .empty-state .em{font-size:3rem;margin-bottom:.5rem}
 .empty-state h3{font-size:1rem;font-weight:800;margin-bottom:.3rem}
 .empty-state p{color:var(--muted);font-size:.85rem;margin-bottom:1rem}
-/* Modal */
 .modal-overlay{position:fixed;inset:0;background:rgba(8,8,13,.85);z-index:500;display:none;align-items:center;justify-content:center;padding:1rem}
 .modal-overlay.show{display:flex}
 .modal-box{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:2rem;width:100%;max-width:460px;position:relative}
@@ -86,16 +93,13 @@
 .btn-danger:disabled{opacity:.5;cursor:not-allowed}
 .delete-warning{color:var(--text2);font-size:.85rem;margin-bottom:.5rem}
 .delete-warning strong{color:var(--text)}
-/* Toast */
 .toast{position:fixed;bottom:2rem;right:2rem;padding:.7rem 1.2rem;border-radius:9px;font-size:.8rem;font-weight:700;z-index:600;transform:translateY(20px);opacity:0;transition:all .3s;pointer-events:none}
 .toast.show{transform:translateY(0);opacity:1}
 .toast.success{background:rgba(0,229,184,.15);border:1px solid rgba(0,229,184,.3);color:var(--accent2)}
 .toast.error{background:rgba(255,70,70,.15);border:1px solid rgba(255,70,70,.3);color:#ff4646}
-/* Loading spinner */
 .loading{text-align:center;padding:2rem;color:var(--muted);font-size:.85rem}
 .spinner{width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;margin:0 auto .5rem}
 @keyframes spin{to{transform:rotate(360deg)}}
-/* Mobile */
 @media(max-width:768px){
   .contacts-header{flex-direction:column;text-align:center}
   .header-right{justify-content:center}
@@ -116,7 +120,6 @@
 <div class="cursor-dot" id="cursorDot"></div>
 <canvas id="particles"></canvas>
 <div class="content">
-<!-- NAV -->
 <nav>
   <div class="inner">
     <div class="logo"><em>M</em>ax.</div>
@@ -135,32 +138,25 @@
     </div>
   </div>
 </nav>
-
 <div class="page-header">
   <h1 class="rv">Contacts <span class="g">Database</span></h1>
   <p class="rv">Full CRUD app powered by Supabase. Sign in to manage your contacts in real-time.</p>
 </div>
-
-<!-- AUTH SECTION (shown when not logged in) -->
 <div id="authSection" class="auth-section">
   <div class="auth-card-inner rv">
     <h2>Sign <span class="g">In</span></h2>
     <p class="auth-sub">Log in to access your contacts database</p>
-
     <div id="authError" class="auth-error" style="display:none"></div>
     <div id="authSuccess" class="auth-success" style="display:none"></div>
-
     <div class="auth-tabs">
-      <button class="auth-tab active" onclick="switchAuthTab('login')">Sign In</button>
-      <button class="auth-tab" onclick="switchAuthTab('signup')">Sign Up</button>
+      <button class="auth-tab active" id="tabLogin" onclick="try{switchAuthTab('login')}catch(e){alert('Error: '+e.message)}">Sign In</button>
+      <button class="auth-tab" id="tabSignup" onclick="try{switchAuthTab('signup')}catch(e){alert('Error: '+e.message)}">Sign Up</button>
     </div>
-
     <form id="loginForm" onsubmit="handleLogin(event)">
       <div class="fg"><label>Email</label><input type="email" id="loginEmail" placeholder="you@example.com" required></div>
       <div class="fg"><label>Password</label><input type="password" id="loginPassword" placeholder="Your password" required></div>
       <button type="submit" class="btn btn-p" style="width:100%;justify-content:center;margin-top:.5rem">Sign In →</button>
     </form>
-
     <form id="signupForm" onsubmit="handleSignup(event)" style="display:none">
       <div class="fg"><label>Email</label><input type="email" id="signupEmail" placeholder="you@example.com" required></div>
       <div class="fg"><label>Password</label><input type="password" id="signupPassword" placeholder="At least 6 characters" required minlength="6"></div>
@@ -168,8 +164,6 @@
     </form>
   </div>
 </div>
-
-<!-- CONTACTS APP (shown when logged in) -->
 <div id="contactsApp" style="display:none">
   <div class="contacts-app">
     <div class="contacts-header rv">
@@ -180,31 +174,22 @@
         <button class="btn-sm btn-logout" onclick="handleLogout()">Logout</button>
       </div>
     </div>
-
-    <!-- Stats -->
     <div class="contacts-stats rv">
       <div class="cs"><div class="cs-num" id="totalCount">0</div><div class="cs-label">Total</div></div>
       <div class="cs"><div class="cs-num" id="todayCount">0</div><div class="cs-label">Today</div></div>
       <div class="cs"><div class="cs-num" id="emailCount">0</div><div class="cs-label">Have Email</div></div>
     </div>
-
-    <!-- Search -->
     <div class="contacts-search rv">
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input type="text" id="searchInput" placeholder="Search contacts..." oninput="filterContacts()">
       <span class="search-count" id="contactCount"></span>
     </div>
-
-    <!-- Contacts List -->
     <div id="contactsList" class="rv">
       <div class="loading"><div class="spinner"></div>Loading contacts...</div>
     </div>
   </div>
 </div>
-
-</div><!-- end content -->
-
-<!-- ADD/EDIT MODAL -->
+</div>
 <div class="modal-overlay" id="contactModal">
   <div class="modal-box">
     <h2 id="modalTitle">Add New Contact</h2>
@@ -222,8 +207,6 @@
     </form>
   </div>
 </div>
-
-<!-- DELETE MODAL -->
 <div class="modal-overlay" id="deleteModal">
   <div class="modal-box">
     <h2>Delete Contact</h2>
@@ -234,39 +217,23 @@
     </div>
   </div>
 </div>
-
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
-
 <footer>
   <span>&copy; 2026 Max. Built from scratch at 14.</span>
   <span class="r"><span class="dot"></span>&nbsp;This is just the beginning</span>
 </footer>
-
 <script>
-// ============================================
-// SUPABASE CONFIG
-// ============================================
 const SUPABASE_URL = 'https://tlpgqblmmxcnqmesibvi.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRscGdxYmxtbXhjbnFtZXNpYnZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0NDg0MjYsImV4cCI6MjA4NzAyNDQyNn0.tHrOCJV-PC1nknKPMp5eJByJRGAW8zrRAtyurbCOmpQ';
-
-if (!window.supabase) {
-  document.getElementById('authSection').innerHTML = '<div class="auth-card-inner" style="text-align:center;padding:2rem"><h2 style="color:#ff4646">Connection Error</h2><p style="color:var(--text2)">Could not load the app. Please check your internet connection and refresh.</p></div>';
-  throw new Error('Supabase CDN failed to load');
+var supabaseLib = window.supabase;
+if (!supabaseLib) {
+  document.getElementById('authSection').innerHTML = '<div class="auth-card-inner" style="text-align:center;padding:2rem"><h2 style="color:#ff4646">Connection Error</h2><p style="color:var(--text2)">Could not load Supabase. Please check your internet and refresh.</p></div>';
 }
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-// ============================================
-// STATE
-// ============================================
+var supabase = supabaseLib ? supabaseLib.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 let allContacts = [];
 let deleteId = null;
 let realtimeSetup = false;
 let isLoading = false;
-
-// ============================================
-// AUTH
-// ============================================
 function switchAuthTab(tab, keepMessages) {
   document.querySelectorAll('.auth-tab').forEach(function(t){t.classList.remove('active')});
   if (tab === 'login') {
@@ -280,10 +247,10 @@ function switchAuthTab(tab, keepMessages) {
   }
   if (!keepMessages) hideAuthMessages();
 }
-
 async function handleLogin(e) {
   e.preventDefault();
   hideAuthMessages();
+  if (!supabase) { showAuthError('Supabase not loaded. Please refresh the page.'); return; }
   var email = document.getElementById('loginEmail').value;
   var password = document.getElementById('loginPassword').value;
   try {
@@ -299,10 +266,10 @@ async function handleLogin(e) {
     showAuthError('Connection error: ' + err.message);
   }
 }
-
 async function handleSignup(e) {
   e.preventDefault();
   hideAuthMessages();
+  if (!supabase) { showAuthError('Supabase not loaded. Please refresh the page.'); return; }
   var email = document.getElementById('signupEmail').value;
   var password = document.getElementById('signupPassword').value;
   try {
@@ -319,13 +286,11 @@ async function handleSignup(e) {
     showAuthError('Connection error: ' + err.message);
   }
 }
-
 async function handleLogout() {
   await supabase.auth.signOut();
   document.getElementById('authSection').style.display = '';
   document.getElementById('contactsApp').style.display = 'none';
 }
-
 function showAuthError(msg) {
   var el = document.getElementById('authError');
   el.textContent = msg;
@@ -340,11 +305,8 @@ function hideAuthMessages() {
   document.getElementById('authError').style.display = 'none';
   document.getElementById('authSuccess').style.display = 'none';
 }
-
-// ============================================
-// INIT
-// ============================================
 async function init() {
+  if (!supabase) return;
   try {
     var sessionData = await supabase.auth.getSession();
     if (sessionData.data.session) {
@@ -360,7 +322,6 @@ async function init() {
     showAuthError('Could not connect to server: ' + err.message);
   }
 }
-
 function showApp(user) {
   document.getElementById('authSection').style.display = 'none';
   document.getElementById('contactsApp').style.display = '';
@@ -368,10 +329,6 @@ function showApp(user) {
   loadContacts();
   setupRealtime();
 }
-
-// ============================================
-// CRUD
-// ============================================
 async function loadContacts() {
   if (isLoading) return;
   isLoading = true;
@@ -388,7 +345,6 @@ async function loadContacts() {
     isLoading = false;
   }
 }
-
 async function createContact(name, email, phone) {
   var result = await supabase.from('contacts').insert([{ name: name, email: email, phone: phone }]).select();
   if (result.error) { showToast('Error adding contact: ' + result.error.message, 'error'); return false; }
@@ -396,7 +352,6 @@ async function createContact(name, email, phone) {
   await loadContacts();
   return true;
 }
-
 async function updateContact(id, name, email, phone) {
   var result = await supabase.from('contacts').update({ name: name, email: email, phone: phone }).eq('id', id).select();
   if (result.error) { showToast('Error updating contact: ' + result.error.message, 'error'); return false; }
@@ -404,7 +359,6 @@ async function updateContact(id, name, email, phone) {
   await loadContacts();
   return true;
 }
-
 async function deleteContact(id) {
   var result = await supabase.from('contacts').delete().eq('id', id);
   if (result.error) { showToast('Error deleting contact: ' + result.error.message, 'error'); return false; }
@@ -412,10 +366,6 @@ async function deleteContact(id) {
   await loadContacts();
   return true;
 }
-
-// ============================================
-// REAL-TIME
-// ============================================
 function setupRealtime() {
   if (realtimeSetup) return;
   realtimeSetup = true;
@@ -423,28 +373,20 @@ function setupRealtime() {
     loadContacts();
   }).subscribe();
 }
-
-// ============================================
-// RENDER
-// ============================================
 function escapeHtml(str) {
   if (!str) return '';
   return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
-
 function renderContacts(contacts) {
   var container = document.getElementById('contactsList');
   document.getElementById('contactCount').textContent = contacts.length + ' contacts';
-
   if (contacts.length === 0) {
     container.innerHTML = '<div class="empty-state"><div class="em">📇</div><h3>No contacts yet</h3><p>Add your first contact to get started!</p><button class="btn-sm btn-add" onclick="openAddModal()">+ Add Contact</button></div>';
     return;
   }
-
   var html = '<div class="table-wrap"><table class="contacts-table"><thead><tr>';
   html += '<th>Name</th><th>Email</th><th>Phone</th><th>Added</th><th>Actions</th>';
   html += '</tr></thead><tbody>';
-
   contacts.forEach(function(c) {
     var date = c.created_at ? new Date(c.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—';
     html += '<tr>';
@@ -457,11 +399,9 @@ function renderContacts(contacts) {
     html += '<button class="btn-del" onclick=\'openDeleteModal(' + c.id + ', ' + JSON.stringify(c.name).replace(/'/g, "&#39;") + ')\'>Delete</button>';
     html += '</td></tr>';
   });
-
   html += '</tbody></table></div>';
   container.innerHTML = html;
 }
-
 function updateStats() {
   document.getElementById('totalCount').textContent = allContacts.length;
   var today = new Date().toDateString();
@@ -470,10 +410,6 @@ function updateStats() {
   var emailCount = allContacts.filter(function(c) { return c.email && c.email.trim(); }).length;
   document.getElementById('emailCount').textContent = emailCount;
 }
-
-// ============================================
-// SEARCH
-// ============================================
 function filterContacts() {
   var query = document.getElementById('searchInput').value.toLowerCase().trim();
   if (!query) { renderContacts(allContacts); return; }
@@ -484,10 +420,6 @@ function filterContacts() {
   });
   renderContacts(filtered);
 }
-
-// ============================================
-// MODALS
-// ============================================
 function openAddModal() {
   document.getElementById('modalTitle').textContent = 'Add New Contact';
   document.getElementById('saveBtn').textContent = 'Save Contact';
@@ -498,7 +430,6 @@ function openAddModal() {
   document.getElementById('contactModal').classList.add('show');
   document.getElementById('contactName').focus();
 }
-
 function openEditModal(contact) {
   document.getElementById('modalTitle').textContent = 'Edit Contact';
   document.getElementById('saveBtn').textContent = 'Update Contact';
@@ -509,20 +440,16 @@ function openEditModal(contact) {
   document.getElementById('contactModal').classList.add('show');
   document.getElementById('contactName').focus();
 }
-
 function closeModal() { document.getElementById('contactModal').classList.remove('show'); }
-
 function openDeleteModal(id, name) {
   deleteId = id;
   document.getElementById('deleteName').textContent = name;
   document.getElementById('deleteModal').classList.add('show');
 }
-
 function closeDeleteModal() {
   document.getElementById('deleteModal').classList.remove('show');
   deleteId = null;
 }
-
 async function handleSaveContact(e) {
   e.preventDefault();
   var btn = document.getElementById('saveBtn');
@@ -548,7 +475,6 @@ async function handleSaveContact(e) {
   }
   if (success) closeModal();
 }
-
 async function confirmDelete() {
   if (!deleteId) return;
   var btn = document.getElementById('confirmDeleteBtn');
@@ -563,43 +489,29 @@ async function confirmDelete() {
     btn.textContent = 'Delete';
   }
 }
-
-// ============================================
-// HELPERS
-// ============================================
 function showToast(message, type) {
   var toast = document.getElementById('toast');
   toast.textContent = message;
   toast.className = 'toast ' + type + ' show';
   setTimeout(function() { toast.classList.remove('show'); }, 3000);
 }
-
-// Close modals on overlay click
 document.getElementById('contactModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
 document.getElementById('deleteModal').addEventListener('click', function(e) { if (e.target === this) closeDeleteModal(); });
 document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeModal(); closeDeleteModal(); } });
-
-// Start the app
 init();
 </script>
-
-<!-- SHARED SCRIPTS (same as other pages) -->
 <script>
-// Theme toggle
 (function(){var t=document.querySelector('.ttrack');if(t)t.addEventListener('click',function(){var d=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',d)})})();
-// Scroll reveal
 (function(){var els=document.querySelectorAll('.rv');if(!els.length)return;
 document.body.classList.add('rv-ready');
 try{var o=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting)entry.target.classList.add('vis')})},{threshold:0.1});els.forEach(function(el){o.observe(el)})}catch(e){}
 setTimeout(function(){els.forEach(function(el){el.classList.add('vis')})},500);
 })();
-// Audio
 var audioCtx=null;var soundEnabled=true;
 function initAudio(){try{if(!audioCtx){audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume()}}catch(e){soundEnabled=false}}
 function playClick(){if(!soundEnabled||!audioCtx)return;try{var t=audioCtx.currentTime;var o1=audioCtx.createOscillator();var o2=audioCtx.createOscillator();var g=audioCtx.createGain();o1.type='sine';o2.type='sine';o1.frequency.setValueAtTime(523,t);o1.frequency.exponentialRampToValueAtTime(784,t+0.06);o2.frequency.setValueAtTime(659,t);o2.frequency.exponentialRampToValueAtTime(988,t+0.06);o1.connect(g);o2.connect(g);g.connect(audioCtx.destination);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.06,t+0.01);g.gain.exponentialRampToValueAtTime(0.001,t+0.15);o1.start(t);o2.start(t);o1.stop(t+0.15);o2.stop(t+0.15)}catch(e){}}
 function playHover(){if(!soundEnabled||!audioCtx)return;try{var t=audioCtx.currentTime;var o=audioCtx.createOscillator();var g=audioCtx.createGain();o.type='sine';o.frequency.setValueAtTime(880,t);o.frequency.exponentialRampToValueAtTime(1100,t+0.04);o.connect(g);g.connect(audioCtx.destination);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.025,t+0.008);g.gain.exponentialRampToValueAtTime(0.001,t+0.08);o.start(t);o.stop(t+0.08)}catch(e){}}
 (function(){document.addEventListener('click',function(){initAudio();playClick()});document.querySelectorAll('a,button,.btn,.btn-sm,.btn-edit,.btn-del,.cs').forEach(function(el){el.addEventListener('mouseenter',function(){initAudio();playHover()})})})();
-// Particles
 (function(){
   var c=document.getElementById('particles');if(!c)return;
   var ctx=c.getContext('2d');if(!ctx)return;
@@ -616,7 +528,6 @@ function playHover(){if(!soundEnabled||!audioCtx)return;try{var t=audioCtx.curre
   }
   if(isMobile){draw();setInterval(draw,100)}else{(function loop(){draw();requestAnimationFrame(loop)})()}
 })();
-// Custom cursor
 (function(){
   if(window.matchMedia('(pointer:coarse)').matches)return;
   var cur=document.getElementById('cursor');var dot=document.getElementById('cursorDot');
@@ -629,14 +540,11 @@ function playHover(){if(!soundEnabled||!audioCtx)return;try{var t=audioCtx.curre
   document.body.style.cursor='none';
   document.querySelectorAll('a,button').forEach(function(el){el.style.cursor='none'});
 })();
-// Click ripple
 (function(){
   if(window.matchMedia('(pointer:coarse)').matches)return;
   document.addEventListener('click',function(e){var r=document.createElement('div');r.className='click-ripple';r.style.left=(e.clientX-40)+'px';r.style.top=(e.clientY-40)+'px';document.body.appendChild(r);setTimeout(function(){if(r.parentNode)r.parentNode.removeChild(r)},600)});
 })();
-// Hamburger menu
 (function(){var h=document.getElementById('hamburger');var ul=document.querySelector('nav ul');if(!h||!ul)return;h.addEventListener('click',function(){h.classList.toggle('open');ul.classList.toggle('open')});ul.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){h.classList.remove('open');ul.classList.remove('open')})})})();
-// Nav active state
 (function(){
   var path=window.location.pathname;
   document.querySelectorAll('nav a').forEach(function(a){
